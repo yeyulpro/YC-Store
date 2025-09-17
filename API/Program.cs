@@ -10,6 +10,16 @@ namespace API
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddControllers();
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigin",
+                    builder => builder.WithOrigins("https://localhost:3004") // Replace with your client's origin
+                                    .AllowAnyHeader()
+                                    .AllowAnyMethod());              
+            });
+
             builder.Services.AddDbContext<StoreContext>(options =>
             {
                 options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -17,10 +27,11 @@ namespace API
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+          
 
-            
+
             var app = builder.Build();
+            app.UseCors("AllowSpecificOrigin");
             app.MapControllers();
 
 

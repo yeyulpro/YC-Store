@@ -1,5 +1,7 @@
 
 using API.Data;
+using API.Middleware;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 
 namespace API
@@ -11,13 +13,13 @@ namespace API
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllers();
-
+            builder.Services.AddTransient<ExceptionMiddleware>();
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigin",
                     builder => builder.WithOrigins("https://localhost:3004") // Replace with your client's origin
                                     .AllowAnyHeader()
-                                    .AllowAnyMethod());              
+                                    .AllowAnyMethod());
             });
 
             builder.Services.AddDbContext<StoreContext>(options =>
@@ -27,10 +29,10 @@ namespace API
 
             // Add services to the container.
 
-          
-
-
             var app = builder.Build();
+
+            app.UseMiddleware<ExceptionMiddleware>();
+
             app.UseCors("AllowSpecificOrigin");
             app.MapControllers();
 

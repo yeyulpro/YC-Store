@@ -37,12 +37,12 @@ namespace API.Entities
         }
         public void RemoveItem(int productId, int quantity)
         {
-            if (quantity <= 0) throw new ArgumentOutOfRangeException("Quantity should be greater than zero",
+            if (quantity < 0) throw new ArgumentOutOfRangeException("Quantity should be greater than zero",
              nameof(quantity));
             var item = FindItem(productId);
             if (item == null) return;
             item.Quantity -= quantity;
-            if (quantity <= 0) Items.Remove(item);
+            if (item.Quantity <= 0) Items.Remove(item);
 
         }
 

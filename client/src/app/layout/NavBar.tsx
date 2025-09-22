@@ -8,11 +8,16 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import ShoppingCartSharpIcon from "@mui/icons-material/ShoppingCartSharp";
 import DownhillSkiingSharpIcon from "@mui/icons-material/DownhillSkiingSharp";
+import { useFetchBasketQuery } from "../../features/basket/BasketApi";
 
 export default function NavBar() {
+
+  const { data: basket } = useFetchBasketQuery();
+  const itemCount = basket?.items.reduce((sum, item)=>sum+item.quantity,0)||0
+
   const leftLinks = [
     { title: "Catalog", path: "catalog" },
     { title: "About", path: "about" },
@@ -71,14 +76,14 @@ export default function NavBar() {
           ))}
         </List>
         <Box sx={{ display: "flex", gap: 2 }}>
-          <IconButton>
-            <Badge badgeContent={4} color="secondary">
+          <IconButton component={Link} to={'/basket'}>
+            <Badge badgeContent={itemCount} color="secondary">
               <ShoppingCartSharpIcon sx={{ color: "#FFFF" }} />
             </Badge>
           </IconButton>
           <List sx={{ display: "flex" }}>
             {rightLinks.map(({ title, path }) => (
-              <ListItem component={NavLink} to={path} key={path} sx={navStyle}>
+              <ListItem component={NavLink} to={path} key={path} >
                 {title.toUpperCase()}
               </ListItem>
             ))}

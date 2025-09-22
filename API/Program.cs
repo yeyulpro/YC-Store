@@ -19,7 +19,8 @@ namespace API
                 options.AddPolicy("AllowSpecificOrigin",
                     builder => builder.WithOrigins("https://localhost:3004") // Replace with your client's origin
                                     .AllowAnyHeader()
-                                    .AllowAnyMethod());
+                                    .AllowAnyMethod()
+                                    .AllowCredentials());
             });
 
             builder.Services.AddDbContext<StoreContext>(options =>

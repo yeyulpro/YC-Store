@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20250920023723_BasketEntityAdded")]
-    partial class BasketEntityAdded
+    [Migration("20250921205640_InitialDb")]
+    partial class InitialDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -66,7 +66,7 @@ namespace API.Controllers
         public async Task<ActionResult> RemoveBasketItem(int productId, int quantity)
         {
             var basket = await RetrieveBasket();
-            if (basket == null) return BadRequest();
+            if (basket == null) return BadRequest("Unable to retrieve basket");
             basket.RemoveItem(productId, quantity);
 
             var result = await context.SaveChangesAsync() > 0;

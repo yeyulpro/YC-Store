@@ -15,13 +15,13 @@ type Props = {
 
 export default function ProductCard({ product }: Props) {
   const [AddBasketItem, { isLoading }] = useAddBasketItemMutation();
-  
 
   return (
     <Card
       elevation={3}
       sx={{
         width: 200,
+        height: 400,
         borderRadius: 2,
         display: "flex",
         flexDirection: "column",
@@ -46,7 +46,12 @@ export default function ProductCard({ product }: Props) {
         </Typography>
       </CardContent>
       <CardActions sx={{ justifyContent: "space-around" }}>
-        <Button disabled={isLoading} onClick={() => AddBasketItem({ product:product, quantity: 1 })}>Add to Cart</Button>
+        <Button
+          disabled={isLoading}
+          onClick={() => AddBasketItem({ product: product, quantity: 1 })}
+        >
+          Add to Cart
+        </Button>
         <Button component={Link} to={`/catalog/${product.id}`}>
           View
         </Button>

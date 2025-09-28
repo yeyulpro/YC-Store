@@ -17,6 +17,8 @@ namespace API.Controllers
         public async Task<ActionResult> RegisterUser(RegisterDto registerDto)
         {
 
+            var isRegistered=signInManager.UserManager.Users.Any(x => x.Email == registerDto.Email);
+            if (isRegistered) return Conflict();
             var user = new User
             {
                 UserName = registerDto.Email,

@@ -12,11 +12,14 @@ import { Link, NavLink } from "react-router-dom";
 import ShoppingCartSharpIcon from "@mui/icons-material/ShoppingCartSharp";
 import DownhillSkiingSharpIcon from "@mui/icons-material/DownhillSkiingSharp";
 import { useFetchBasketQuery } from "../../features/basket/BasketApi";
+import UserMenu from "./UserMenu";
+import { useUserInfoQuery } from "../../features/account/accounApi";
 
 export default function NavBar() {
-
+  const { data: user } = useUserInfoQuery();
   const { data: basket } = useFetchBasketQuery();
-  const itemCount = basket?.items.reduce((sum, item)=>sum+item.quantity,0)||0
+  const itemCount =
+    basket?.items.reduce((sum, item) => sum + item.quantity, 0) || 0;
 
   const leftLinks = [
     { title: "Catalog", path: "catalog" },
@@ -25,7 +28,7 @@ export default function NavBar() {
   ];
   const rightLinks = [
     { title: "Login", path: "login" },
-    { title: "Register", path: "register" },
+    { title: "Register", path: "account/register" },
   ];
 
   const navStyle = {
@@ -76,18 +79,28 @@ export default function NavBar() {
           ))}
         </List>
         <Box sx={{ display: "flex", gap: 2 }}>
-          <IconButton component={Link} to={'/basket'}>
+          <IconButton component={Link} to={"/basket"}>
             <Badge badgeContent={itemCount} color="secondary">
               <ShoppingCartSharpIcon sx={{ color: "#FFFF" }} />
             </Badge>
           </IconButton>
-          <List sx={{ display: "flex" }}>
-            {rightLinks.map(({ title, path }) => (
-              <ListItem component={NavLink} to={path} key={path} >
-                {title.toUpperCase()}
-              </ListItem>
-            ))}
-          </List>
+
+          {user ? (
+            <UserMenu />
+          ) : (
+            <List sx={{ display: "flex" }}>
+              {rightLinks.map(({ title, path }) => (
+                <ListItem
+                  component={NavLink}
+                  to={path}
+                  key={path}
+                  sx={navStyle}
+                >
+                  {title.toUpperCase()}
+                </ListItem>
+              ))}
+            </List>
+          )}
         </Box>
       </Toolbar>
     </AppBar>

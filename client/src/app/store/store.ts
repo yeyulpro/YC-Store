@@ -8,19 +8,22 @@ import {
   type TypedUseSelectorHook,
 } from "react-redux";
 import { accountApi } from "../../features/account/accounApi";
+import { checkoutApi } from "../../features/checkout/checkoutApi";
 
 export const store = configureStore({
   reducer: {
     [catalogApi.reducerPath]: catalogApi.reducer,
     [basketApi.reducerPath]: basketApi.reducer,
     [accountApi.reducerPath]: accountApi.reducer,
+    [checkoutApi.reducerPath]: checkoutApi.reducer,
     catalog: catalogSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
       catalogApi.middleware,
       basketApi.middleware,
-      accountApi.middleware
+      accountApi.middleware,
+      checkoutApi.middleware
     ),
 });
 export type RootState = ReturnType<typeof store.getState>;

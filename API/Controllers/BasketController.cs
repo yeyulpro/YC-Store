@@ -39,6 +39,7 @@ namespace API.Controllers
             return BadRequest("Problem updating basket");
         }
 
+
         private Basket CreateBasket()
         {
             var basketId = Guid.NewGuid().ToString();
@@ -54,13 +55,6 @@ namespace API.Controllers
 
         }
 
-        private async Task<Basket?> RetrieveBasket()
-        {
-            return await context.Baskets
-                         .Include(b => b.Items)
-                         .ThenInclude(i => i.Product)
-                         .FirstOrDefaultAsync(b => b.BasketId == Request.Cookies["basketId"]);
-        }
 
         [HttpDelete]
         public async Task<ActionResult> RemoveBasketItem(int productId, int quantity)
@@ -73,5 +67,13 @@ namespace API.Controllers
             if (!result) return BadRequest("Problem deleting an item");
             return Ok();
         }
+        private async Task<Basket?> RetrieveBasket()
+        {
+            return await context.Baskets
+                         .Include(b => b.Items)
+                         .ThenInclude(i => i.Product)
+                         .FirstOrDefaultAsync(b => b.BasketId == Request.Cookies["basketId"]);
+        }
+
     }
 }

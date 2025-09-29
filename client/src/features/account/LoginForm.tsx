@@ -32,7 +32,7 @@ export default function LoginForm() {
   const onSubmit = async (data: LoginSchemaType) => {
     try {
       await login(data).unwrap();
-      navigate(location.state.from || "/catalog");
+      navigate(location.state?.from || "/catalog");
     } catch (error) {
       const err = error as FetchBaseQueryError;
       console.error("Login failed:", err);

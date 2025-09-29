@@ -7,19 +7,13 @@ import {
   Paper,
 } from "@mui/material";
 import { currencyFormat } from "../../../lib/util";
-import { useFetchBasketQuery } from "../../../features/basket/BasketApi";
-import type { Item } from "../../models/basket";
-import { Link } from "react-router-dom";
+
+import { Link, useLocation } from "react-router-dom";
+import { useBasket } from "../../../lib/useBasket";
 
 export default function OrderSummary() {
-  const { data: basket } = useFetchBasketQuery();
-  const subtotal =
-    basket?.items.reduce(
-      (sum: number, item: Item) => sum + item.quantity * item.price,
-      0
-    ) ?? 0;
-  const deliveryFee = subtotal > 10000 ? 0 : 500;
-
+  const { subtotal, deliveryFee, total } = useBasket();
+  const location = useLocation();
   return (
     <Box
       display="flex"
@@ -43,7 +37,7 @@ export default function OrderSummary() {
           <Box display="flex" justifyContent="space-between" mb={1}>
             <Typography color="textSecondary">Discount</Typography>
             <Typography color="success">
-              {/* TODO */}
+              {/* todo */}
               -$0.00
             </Typography>
           </Box>
@@ -54,22 +48,29 @@ export default function OrderSummary() {
           <Divider sx={{ my: 2 }} />
           <Box display="flex" justifyContent="space-between" mb={1}>
             <Typography color="textSecondary">Total</Typography>
-            <Typography>{currencyFormat(subtotal + deliveryFee)}</Typography>
+            <Typography>{currencyFormat(total)}</Typography>
           </Box>
         </Box>
 
         <Box mt={2}>
+          {!location.pathname.includes("checkout") && (
+            <Button
+              component={Link}
+              to={"/checkout"}
+              variant="contained"
+              color="primary"
+              fullWidth
+              sx={{ mb: 1, bgcolor: "#04afbbff" }}
+            >
+              Checkout
+            </Button>
+          )}
           <Button
             component={Link}
-            to={"/checkout"}
-            variant="contained"
-            color="primary"
+            to={"/catalog"}
             fullWidth
-            sx={{ mb: 1 }}
+            sx={{ bgcolor: "#04afbbff", color: "#FFFF" }}
           >
-            Checkout
-          </Button>
-          <Button component={Link} to={"/catalog"} fullWidth>
             Continue Shopping
           </Button>
         </Box>

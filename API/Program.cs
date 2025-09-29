@@ -3,9 +3,11 @@ using System.Threading.Tasks;
 using API.Data;
 using API.Entities;
 using API.Middleware;
+using API.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 
 namespace API
 {
@@ -17,6 +19,7 @@ namespace API
 
             builder.Services.AddControllers();
             builder.Services.AddTransient<ExceptionMiddleware>();
+            builder.Services.AddScoped<PaymentsService>();
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigin",
@@ -34,12 +37,15 @@ namespace API
             builder.Services.AddIdentityApiEndpoints<User>(options =>
             {
                 options.User.RequireUniqueEmail = true;
-                
+
 
             })
             .AddRoles<IdentityRole>()
-            .AddEntityFrameworkStores<StoreContext>();
 
+            .AddEntityFrameworkStores<StoreContext>();
+            
+            var stripeSecretKey = Environment.GetEnvironmentVariable("STRIPE_SECRET_KEY");
+            StripeConfiguration.ApiKey = stripeSecretKey;
             // Add services to the container.
 
             var app = builder.Build();
@@ -47,12 +53,12 @@ namespace API
             app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseCors("AllowSpecificOrigin");
-             app.UseAuthentication();
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();
             app.MapGroup("api").MapIdentityApi<User>();
-           
+
 
 
             await DbInitializer.InitDb(app);

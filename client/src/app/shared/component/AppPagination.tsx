@@ -17,7 +17,7 @@ export default function AppPagination({ page, onPageChange }: Props) {
         marginTop: 3,
       }}
     >
-      <Box sx={{display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center'}}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
         <Typography sx={{ color: "#2F4F4F", fontSize: "1.2rem" }}>
           Displaying {startItem}-{endItem} of {totalCount} items
         </Typography>

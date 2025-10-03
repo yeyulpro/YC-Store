@@ -15,6 +15,7 @@ import {
 import LogoutIcon from "@mui/icons-material/Logout";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
+import { Link } from "react-router-dom";
 
 export default function UserMenu() {
   const [logout] = useLogoutMutation();
@@ -58,7 +59,8 @@ export default function UserMenu() {
           </ListItemText>
         </MenuItem>
         <MenuItem
-          onClick={handleClose}
+          component={Link}
+          to="/orders"
           sx={{ color: "#333333", fontWeight: "bold" }}
         >
           <ListItemIcon>

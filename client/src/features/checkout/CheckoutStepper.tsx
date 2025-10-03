@@ -31,9 +31,11 @@ import { useBasket } from "../../lib/useBasket";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { LoadingButton } from "@mui/lab";
+import { useCreateOrderMutation } from "../orders/orderApi";
 
 export default function CheckoutStepper() {
   const [activeStep, setActiveStep] = useState(0);
+  const [createOrder] = useCreateOrderMutation();
   const { basket } = useBasket();
   const steps = ["Address", "Payment", "Review"];
   const {
@@ -57,7 +59,10 @@ export default function CheckoutStepper() {
       if (address) await updateAddress(address);
     }
     if (activeStep == 1) {
-      if (!elements || !stripe) return;
+      if (!elements || !stripe) {
+        toast.error("Payment is not ready. Please wait a moment.");
+        return;
+      }
       const result = await elements.submit();
       if (result.error) return toast.error(result.error.message);
       const stripeResult = await stripe.createConfirmationToken({ elements });
@@ -75,6 +80,10 @@ export default function CheckoutStepper() {
     try {
       if (!confirmationToken || !basket?.clientSecret)
         throw new Error("Unable to process payment");
+
+      const orderModel = await createOrderModel();
+      const orderResult = await createOrder(orderModel);
+
       const paymentResult = await stripe?.confirmPayment({
         clientSecret: basket.clientSecret,
         redirect: "if_required",
@@ -82,8 +91,9 @@ export default function CheckoutStepper() {
           confirmation_token: confirmationToken.id,
         },
       });
+
       if (paymentResult?.paymentIntent?.status === "succeeded") {
-        navigate("/checkout/success");
+        navigate("/checkout/success", { state: orderResult });
         clearBasket();
       } else if (paymentResult?.error) {
         throw new Error(paymentResult.error.message);
@@ -99,6 +109,15 @@ export default function CheckoutStepper() {
       setSubmitting(false);
     }
   };
+
+  const createOrderModel = async () => {
+    const shippingAddress = await getStripeAddress();
+    const paymentSummary = confirmationToken?.payment_method_preview.card;
+
+    if (!shippingAddress || !paymentSummary) throw new Error("Problem creating order.");
+
+    return { shippingAddress, paymentSummary }
+  }
 
   const getStripeAddress = async () => {
     const addressElement = elements?.getElement("address");

@@ -9,6 +9,7 @@ import {
 } from "react-redux";
 import { accountApi } from "../../features/account/accounApi";
 import { checkoutApi } from "../../features/checkout/checkoutApi";
+import { orderApi } from "../../features/orders/orderApi";
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     [basketApi.reducerPath]: basketApi.reducer,
     [accountApi.reducerPath]: accountApi.reducer,
     [checkoutApi.reducerPath]: checkoutApi.reducer,
+    [orderApi.reducerPath]: orderApi.reducer,
     catalog: catalogSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
@@ -23,7 +25,9 @@ export const store = configureStore({
       catalogApi.middleware,
       basketApi.middleware,
       accountApi.middleware,
-      checkoutApi.middleware
+      checkoutApi.middleware,
+      orderApi.middleware,
+
     ),
 });
 export type RootState = ReturnType<typeof store.getState>;

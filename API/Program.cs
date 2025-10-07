@@ -31,15 +31,13 @@ namespace API
 
             builder.Services.AddDbContext<StoreContext>(options =>
             {
-                options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
             builder.Services.AddIdentityApiEndpoints<User>(options =>
             {
                 options.User.RequireUniqueEmail = true;
-
-
-            })
+            }) 
             .AddRoles<IdentityRole>()
 
             .AddEntityFrameworkStores<StoreContext>();
@@ -52,6 +50,9 @@ namespace API
 
             app.UseMiddleware<ExceptionMiddleware>();
 
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+
             app.UseCors("AllowSpecificOrigin");
             app.UseAuthentication();
             app.UseAuthorization();
@@ -59,9 +60,19 @@ namespace API
             app.MapControllers();
             app.MapGroup("api").MapIdentityApi<User>();
 
+            app.MapFallbackToController("index", "Fallback");
+            using (var scope = app.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<StoreContext>();
 
-
-            await DbInitializer.InitDb(app);
+                await context.Database.MigrateAsync();
+                if (await context.Database.CanConnectAsync())
+                    Console.WriteLine("DB 연결 성공!");
+                else
+                    Console.WriteLine("DB 연결 실패...");
+                await DbInitializer.InitDb(app);
+            }
+           
             app.Run();
         }
     }

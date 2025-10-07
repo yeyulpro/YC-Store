@@ -83,7 +83,7 @@ export default function OrderDetailedPage() {
                                     X {item.quantity}
                                 </TableCell>
                                 <TableCell align="right" sx={{ p: 4 }}>
-                                    X {item.price}
+                                    X {currencyFormat(item.price)}
                                 </TableCell>
                             </TableRow>
                         ))}

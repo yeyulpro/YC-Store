@@ -11,6 +11,7 @@ import {
 
 import { useBasket } from "../../lib/useBasket";
 import type { ConfirmationToken } from "@stripe/stripe-js";
+import { currencyFormat } from "../../lib/util";
 
 type Props = {
   confirmationToken: ConfirmationToken | null;
@@ -78,7 +79,7 @@ export default function Review({ confirmationToken }: Props) {
                     X {item.quantity}
                   </TableCell>
                   <TableCell align="right" sx={{ p: 4 }}>
-                    X {item.price}
+                    X {currencyFormat(item.price)}
                   </TableCell>
                 </TableRow>
               ))}

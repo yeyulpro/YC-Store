@@ -21,7 +21,6 @@ import {
   useFetchAddressQuery,
   useUpdateUserAddressMutation,
 } from "../account/accounApi";
-import type { Address } from "../../app/models/user";
 import type {
   ConfirmationToken,
   StripeAddressElementChangeEvent,
@@ -38,10 +37,7 @@ export default function CheckoutStepper() {
   const [createOrder] = useCreateOrderMutation();
   const { basket } = useBasket();
   const steps = ["Address", "Payment", "Review"];
-  const {
-    data: { name, ...restAddress } = {} as Address,
-    isLoading: loadingAddress,
-  } = useFetchAddressQuery();
+  const { data, isLoading: loadingAddress } = useFetchAddressQuery();
   const [updateAddress] = useUpdateUserAddressMutation();
   const [saveAddressChecked, setSaveAddressChecked] = useState(false);
   const elements = useElements();
@@ -51,6 +47,11 @@ export default function CheckoutStepper() {
   const [submitting, setSubmitting] = useState(false);
   const { total, clearBasket } = useBasket();
   const navigate = useNavigate();
+
+  let name, restAddress;
+  if (data) {
+    ({ name, ...restAddress } = data);
+  }
   const [confirmationToken, setConfirmationToken] =
     useState<ConfirmationToken | null>(null);
   const handleNext = async () => {
@@ -114,10 +115,11 @@ export default function CheckoutStepper() {
     const shippingAddress = await getStripeAddress();
     const paymentSummary = confirmationToken?.payment_method_preview.card;
 
-    if (!shippingAddress || !paymentSummary) throw new Error("Problem creating order.");
+    if (!shippingAddress || !paymentSummary)
+      throw new Error("Problem creating order.");
 
-    return { shippingAddress, paymentSummary }
-  }
+    return { shippingAddress, paymentSummary };
+  };
 
   const getStripeAddress = async () => {
     const addressElement = elements?.getElement("address");

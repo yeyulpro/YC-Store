@@ -16,12 +16,23 @@ namespace API.Data
             using var scope = app.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<StoreContext>() ?? throw new InvalidOperationException("Failed to retrieve store context");
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>() ?? throw new InvalidOperationException("Failed to retrieve User Manager");
+           
+             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+        if (!await roleManager.RoleExistsAsync("Member"))
+            await roleManager.CreateAsync(new IdentityRole("Member"));
+
+        if (!await roleManager.RoleExistsAsync("Admin"))
+            await roleManager.CreateAsync(new IdentityRole("Admin"));
+           
+           
+           
             await SeedData(context, userManager);
         }
 
         private static async Task SeedData(StoreContext context, UserManager<User> userManager)
         {
-            context.Database.Migrate();
+            await context.Database.MigrateAsync();
 
             if (!userManager.Users.Any())
             {
@@ -39,7 +50,7 @@ namespace API.Data
                     Email = "admin@test.com"
                 };
                 await userManager.CreateAsync(admin, "Passw0rd!");
-                await userManager.AddToRolesAsync(admin, ["Member", "Admin"]);
+                await userManager.AddToRolesAsync(admin, new[]{ "Member", "Admin"});
             }
 
             if (context.Products.Any()) return;
@@ -244,7 +255,7 @@ namespace API.Data
                     QuantityInStock = 100
                 } };
              context.Products.AddRange(products);
-             context.SaveChanges();
+             await context.SaveChangesAsync();
         }
     }
 }

@@ -107,7 +107,7 @@ namespace API.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Failed to  constrct stripe event");
+                logger.LogError(ex, "Failed to  construct stripe event");
                 throw new StripeException("Invalid signature");
             };
         }

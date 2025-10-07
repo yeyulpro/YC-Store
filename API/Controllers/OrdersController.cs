@@ -71,8 +71,7 @@ namespace API.Controllers
                 order.OrderItems = items;
             }  
           
-            context.Baskets.Remove(basket);
-            Response.Cookies.Delete("basketId");
+           
             var result = await context.SaveChangesAsync() > 0;
             if (!result) return BadRequest("Failed in removal of basket after order is submitted.");
             return CreatedAtAction(nameof(GetOrderDetails), new { id = order.Id }, order.ToDto());

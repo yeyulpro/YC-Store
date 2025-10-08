@@ -16,7 +16,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLoginMutation } from "./accounApi";
 import { toast } from "react-toastify";
-import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+// import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 export default function LoginForm() {
   const [login, { isLoading }] = useLoginMutation();
   const navigate = useNavigate();
@@ -34,9 +34,10 @@ export default function LoginForm() {
       await login(data).unwrap();
       navigate(location.state?.from || "/catalog");
     } catch (error) {
-      const err = error as FetchBaseQueryError;
-      console.error("Login failed:", err);
-      toast.error(`Login failed ${err}`, { position: "top-center" });
+      // const err = error as FetchBaseQueryError;
+      const err = error as { data: { title?: string } };
+      console.error("Login failed:", err?.data?.title);
+      toast.error(`Login failed ${err?.data?.title}`, { position: "top-center" });
     }
   };
 

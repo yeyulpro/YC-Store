@@ -1,15 +1,13 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi} from "@reduxjs/toolkit/query/react";
 import type { Address, User } from "../../app/models/user";
 import type { LoginSchemaType } from "../../lib/schema/loginSchema";
 import { router } from "../../app/routes/Routes";
 import type { RegisterSchemaType } from "../../lib/schema/registerSchema";
+import { customBaseQuery } from "../../app/api/baseApi";
 
 export const accountApi = createApi({
   reducerPath: "accountApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "https://localhost:5004/api",
-    credentials: "include",
-  }),
+  baseQuery: customBaseQuery,
   tagTypes: ["UserInfo"],
   endpoints: (builder) => ({
     login: builder.mutation<void, LoginSchemaType>({

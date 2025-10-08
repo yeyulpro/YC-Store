@@ -11,12 +11,26 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-latest    
     permissions:
       contents: read #This is required for actions/checkout
+    env:
+      DOTNET_ROOT: C:\hostedtoolcache\windows\dotnet
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Set up node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install deps and build client app
+        run: |
+          cd client
+          npm install
+          npm run build
+
 
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4

@@ -1,17 +1,15 @@
 import { Item, type Basket } from "../../app/models/basket";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi } from "@reduxjs/toolkit/query/react";
 import type { Product } from "../../app/models/product";
 import Cookies from 'js-cookie';
+import { customBaseQuery } from "../../app/api/baseApi";
 function isBasketItem(product: Product | Item): product is Item {
   return (product as Item).quantity !== undefined;
 }
 
 export const basketApi = createApi({
   reducerPath: "basketApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "https://localhost:5004/api",
-    credentials: "include",
-  }),
+  baseQuery: customBaseQuery,
   tagTypes: ["Basket"],
   endpoints: (builder) => ({
     fetchBasket: builder.query<Basket, void>({

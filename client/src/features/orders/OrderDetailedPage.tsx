@@ -19,7 +19,7 @@ export default function OrderDetailedPage() {
         <Card sx={{ p: 2, maxWidth: 'md', mx: 'auto' }}>
             <Box display='flex' justifyContent='space-between' alignItems='center'>
                 <Typography variant="h5" align='center'>
-                    Order summary for #{order.id}
+                    Your Order summary for #{order.id}
                 </Typography>
                 <Button component={Link} to='/orders' variant="outlined">
                     Back to orders

@@ -35,7 +35,7 @@ export default function OrderDetailedPage() {
                     <Typography component='dd' variant="body2" color="initial" fontWeight='500'>{formatAddressString(order.shippingAddress)}</Typography>
                 </Box>
                 <Box component='dl'>
-                    <Typography component='dt' variant="subtitle1" color="initial" fontWeight='500'>Payment info</Typography>
+                    <Typography component='dt' variant="subtitle1" color="initial" fontWeight='500'>Payment information</Typography>
                     <Typography component='dd' variant="body2" color="initial" fontWeight='500'>{formatPaymentString(order.paymentSummary)}</Typography>
                 </Box>
             </Box>

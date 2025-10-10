@@ -31,7 +31,12 @@ namespace API
 
             builder.Services.AddDbContext<StoreContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+                sqlOptions => sqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 5,
+                        maxRetryDelay: TimeSpan.FromSeconds(10),
+                        errorNumbersToAdd: null));
+                                    
             });
 
             builder.Services.AddIdentityApiEndpoints<User>(options =>
@@ -53,9 +58,13 @@ namespace API
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
+            app.UseRouting();
+            
             app.UseCors("AllowSpecificOrigin");
             app.UseAuthentication();
             app.UseAuthorization();
+
+            
 
             app.MapControllers();
             app.MapGroup("api").MapIdentityApi<User>();
